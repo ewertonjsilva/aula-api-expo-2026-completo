@@ -37,7 +37,8 @@ export default function TabNavigator() {
         // Define as cores personalizadas que você quer usar
         tabBarActiveTintColor: '#00FF00',   // Cor quando focado (focused)
         tabBarInactiveTintColor: '#FF0000', // Cor quando desfocado
-      })}
+        // headerShown: false,
+      })}      
     >
       <Tab.Screen
         name="home"
