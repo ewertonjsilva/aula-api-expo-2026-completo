@@ -26,7 +26,7 @@ export default function RootStack() {
         options={{ title: 'Login' }}
       />
       <Stack.Screen
-        name="home"
+        name="myTab"
         component={MyTabs}
         options={{ 
           title: 'Home', 

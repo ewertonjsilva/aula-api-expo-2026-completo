@@ -9,7 +9,7 @@ export default function Login() {
     return (
         <View>
             <Text>Login</Text>
-            <Button screen="home">Acessar o sistema</Button>
+            <Button screen="myTab">Acessar o sistema</Button>
             <Link screen="recSenha">Esqueci a senha</Link>
             <Pressable 
                 onPress={() => navigation.navigate('cadUsuario')}
