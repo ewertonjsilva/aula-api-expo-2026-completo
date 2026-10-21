@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// npm i @expo/vector-icons
+import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../services/AuthContext';
 
 import HomeScreen from '../telas/home';
 import PerfilScreen from '../telas/perfil';
@@ -8,8 +10,12 @@ import ItensScreen from '../telas/itens';
 
 const Tab = createBottomTabNavigator();
 
-export default function TabNavigator() {
+export default function TabNavigator({ route }) {
+  const navigation = useNavigation();
+  const [user, setUser] = useState(route.params?.user);
+
   return (
+    <AuthContext.Provider value={{ user, updateUser: setUser, signOut: () => navigation.replace('login') }}>
     <Tab.Navigator
       screenOptions={({ route }) => ({
         // tabBarShowLabel: false, // Oculta o texto de todas as abas
@@ -49,5 +55,6 @@ export default function TabNavigator() {
       <Tab.Screen name="perfil" component={PerfilScreen} />
       <Tab.Screen name="itens" component={ItensScreen} />
     </Tab.Navigator>
+    </AuthContext.Provider>
   );
 }
