@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, Pressable, RefreshControl, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import api from '../services/api';
 
@@ -18,7 +18,7 @@ export default function Itens() {
         setErro('');
 
         try {
-            const response = await api.get('/produtos', {
+            const response = await api.get('/produtos/aleatorios?quantidade=6', {
                 params: { page: proximaPagina, limit: 5 },
             });
             const novosProdutos = response.data?.dados || [];
@@ -46,15 +46,39 @@ export default function Itens() {
             ? 'fast-food-outline'
             : 'restaurant-outline';
         const valor = Number(item.valor);
+        let imagemProduto = item.imgProduto;
+
+        if (imagemProduto) {
+            try {
+                const urlImagem = new URL(imagemProduto);
+                const urlApi = new URL(api.defaults.baseURL);
+
+                if (urlImagem.hostname === 'localhost' || urlImagem.hostname === '127.0.0.1') {
+                    urlImagem.hostname = urlApi.hostname;
+                    urlImagem.port = urlApi.port;
+                    imagemProduto = urlImagem.toString();
+                }
+            } catch {
+                imagemProduto = null;
+            }
+        }
 
         return (
             <View style={{ backgroundColor: '#fff', borderColor: '#dce5e0', borderRadius: 8, borderWidth: 1, flexDirection: 'row', gap: 14, marginBottom: 12, padding: 16 }}>
-                <View style={{ alignItems: 'center', backgroundColor: '#e8f2ed', borderRadius: 8, height: 52, justifyContent: 'center', width: 52 }}>
-                    <Ionicons name={icone} size={26} color="#176b55" />
-                </View>
+                {imagemProduto ? (
+                    <Image
+                        accessibilityLabel={`Imagem de ${item.nome}`}
+                        resizeMode="cover"
+                        source={{ uri: imagemProduto }}
+                        style={{ backgroundColor: '#e8f2ed', borderRadius: 8, height: 88, width: 88 }}
+                    />
+                ) : null}
                 <View style={{ flex: 1, gap: 5 }}>
                     <View style={{ alignItems: 'flex-start', flexDirection: 'row', gap: 8, justifyContent: 'space-between' }}>
-                        <Text style={{ color: '#193b32', flex: 1, fontSize: 16, fontWeight: '700' }}>{item.nome}</Text>
+                        <View style={{ alignItems: 'flex-start', flex: 1, flexDirection: 'row', gap: 6 }}>
+                            <Ionicons name={icone} size={20} color="#176b55" />
+                            <Text style={{ color: '#193b32', flex: 1, fontSize: 16, fontWeight: '700' }}>{item.nome}</Text>
+                        </View>
                         <Text style={{ color: '#176b55', fontSize: 15, fontWeight: '700' }}>
                             {Number.isFinite(valor) ? valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : item.valor}
                         </Text>
